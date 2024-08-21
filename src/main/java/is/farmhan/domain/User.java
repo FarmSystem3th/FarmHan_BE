@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import java.util.List;
@@ -13,6 +12,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Getter
 @DynamicUpdate
+@Table(name = "USER_TB")
 public class User {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)

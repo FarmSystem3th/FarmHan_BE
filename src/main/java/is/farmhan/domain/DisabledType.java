@@ -11,6 +11,8 @@ import static jakarta.persistence.FetchType.LAZY;
 @RequiredArgsConstructor
 @Getter
 @DynamicUpdate
+@Table(name = "DISABLEDTYPE_TB")
+
 public class DisabledType {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -11,6 +11,7 @@ import static jakarta.persistence.FetchType.LAZY;
 @RequiredArgsConstructor
 @Getter
 @DynamicUpdate
+@Table(name = "CALL_TB")
 public class Call {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
