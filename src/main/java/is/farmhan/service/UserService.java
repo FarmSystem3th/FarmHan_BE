@@ -19,8 +19,7 @@ public class UserService {
 
     public Boolean login(LoginRequestDto loginRequestDto){
 
-        User user = userRepository.findById(loginRequestDto.getUserId())
-                .orElseThrow(() -> new ApiException(ErrorDefine.USER_NOT_FOUND));
+        User user = userRepository.findByloginId(loginRequestDto.getLoginId());
 
         if(user.getUserPassword().equals(loginRequestDto.getUserPassword())){
             return true;

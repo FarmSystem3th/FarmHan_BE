@@ -6,8 +6,7 @@ import java.util.List;
 
 @Getter
 public class LoginRequestDto {
-
-    private Long userId;
+    private String loginId;
     private String userPassword;
 
 }
