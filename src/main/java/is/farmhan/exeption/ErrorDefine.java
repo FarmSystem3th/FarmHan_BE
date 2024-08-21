@@ -9,10 +9,10 @@ import org.springframework.http.HttpStatus;
 public enum ErrorDefine {
 
     // Bad Request
-    INVALID_ARGUMENT("4000", HttpStatus.BAD_REQUEST, "Bad Request: Invalid Arguments");
-
+    INVALID_ARGUMENT("4000", HttpStatus.BAD_REQUEST, "Bad Request: Invalid Arguments"),
 
     // Not Found
+    USER_NOT_FOUND("4040", HttpStatus.BAD_REQUEST, "Bad Request: Invalid Arguments");
 
     // Forbidden
 
