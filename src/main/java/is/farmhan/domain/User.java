@@ -19,25 +19,26 @@ public class User {
     private Long id;
 
     @Column(nullable = false)
-    private String userName;
-
-    @Column(nullable = false)
-    private String loginId;
+    private String userLoginId;
 
     @Column(nullable = false)
     private String userPassword;
 
     @Column(nullable = false)
-    private String userSex;
+    private String userName;
 
     @Column(nullable = false)
-    private Long userAge;
+    private String userNumber;
+
+    @Column(nullable = false)
+    private String patientSex;
+
+    @Column(nullable = false)
+    private String patientAge;
 
     @Column(nullable = false)
     private String patientName;
 
-    @Column(nullable = false)
-    private String patientNumber;
 
     @Column(nullable = false)
     private String disabledGrade;
@@ -46,11 +47,11 @@ public class User {
     private String significant;
 
     @Column
-    private String request;
+    private String requirement;
 
     @Lob
     @Column(columnDefinition = "TEXT")
-    private String refreshToken;
+    private String secretKey;
 
     @Lob
     @Column(columnDefinition = "TEXT")
@@ -62,19 +63,19 @@ public class User {
     private List<DisabledType> disabledTypes;
 
     @Builder
-    public User(Long id, String userName, String loginId, String userPassword, String userSex, Long userAge, String patientName, String patientNumber, String disabledGrade, String significant, String request, String refreshToken, String apiToken, List<DisabledType> disabledTypes) {
+    public User(Long id, String userLoginId, String userPassword, String userName, String userNumber, String patientSex, String patientAge, String patientName, String disabledGrade, String significant, String requirement, String secretKey, String apiToken, List<DisabledType> disabledTypes) {
         this.id = id;
-        this.userName = userName;
-        this.loginId = loginId;
+        this.userLoginId = userLoginId;
         this.userPassword = userPassword;
-        this.userSex = userSex;
-        this.userAge = userAge;
+        this.userName = userName;
+        this.userNumber = userNumber;
+        this.patientSex = patientSex;
+        this.patientAge = patientAge;
         this.patientName = patientName;
-        this.patientNumber = patientNumber;
         this.disabledGrade = disabledGrade;
         this.significant = significant;
-        this.request = request;
-        this.refreshToken = refreshToken;
+        this.requirement = requirement;
+        this.secretKey = secretKey;
         this.apiToken = apiToken;
         this.disabledTypes = disabledTypes;
     }

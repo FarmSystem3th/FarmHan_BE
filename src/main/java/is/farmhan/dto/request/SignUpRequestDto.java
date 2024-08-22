@@ -8,31 +8,33 @@ import java.util.List;
 @Getter
 public class SignUpRequestDto {
 
-    private String loginId;
+    private String userLoginId;
     private String userPassword;
     private String userName;
-    private Long userAge;
-    private String userSex;
+    private String userNumber;
+    private String patientAge;
+    private String patientSex;
     private String patientName;
-    private String patientNumber;
     private List<DisabledType> disabledType;
     private String disabledGrade;
     private String significant;
-    private String request;
+    private String requirement;
+
+
 
     public User toEntity(SignUpRequestDto signUpRequestDto) {
         return User.builder()
-                .loginId(signUpRequestDto.getLoginId())
+                .userLoginId(signUpRequestDto.getUserLoginId())
                 .userPassword(signUpRequestDto.getUserPassword())
                 .userName(signUpRequestDto.getUserName())
-                .userAge(signUpRequestDto.getUserAge())
-                .userSex(signUpRequestDto.getUserSex())
+                .userNumber(signUpRequestDto.getUserNumber())
+                .patientAge(signUpRequestDto.getPatientAge())
+                .patientSex(signUpRequestDto.getPatientSex())
                 .patientName(signUpRequestDto.getPatientName())
-                .patientNumber(signUpRequestDto.getPatientNumber())
                 .disabledTypes(signUpRequestDto.getDisabledType())
                 .disabledGrade(signUpRequestDto.getDisabledGrade())
                 .significant(signUpRequestDto.getSignificant())
-                .request(signUpRequestDto.getRequest())
+                .requirement(signUpRequestDto.getRequirement())
                 .build();
     }
 

@@ -21,6 +21,8 @@ public class DisabledType {
     @Column
     private String disabledType;
 
+//=========================================================================//
+
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
