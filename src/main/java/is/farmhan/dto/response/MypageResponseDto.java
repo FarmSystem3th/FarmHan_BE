@@ -10,40 +10,46 @@ import java.util.List;
 @Getter
 @ToString
 public class MypageResponseDto {
+    private final String userLoginId;
+    private final String userPassword;
     private final String userName;
-    private final Long userAge;
-    private final String userSex;
+    private final String userNumber;
+    private final String patientAge;
+    private final String patientSex;
     private final String patientName;
-    private final String patientNumber;
     private final List<DisabledType> disabledType;
     private final String disabledGrade;
     private final String significant;
-    private final String request;
+    private final String requirement;
 
     @Builder
-    public MypageResponseDto(String userName, Long userAge, String userSex, String patientName, String patientNumber, List<DisabledType> disabledType, String disabledGrade, String significant, String request) {
+    public MypageResponseDto(String userLoginId, String userPassword, String userName, String userNumber, String patientAge, String patientSex, String patientName, List<DisabledType> disabledType, String disabledGrade, String significant, String requirement) {
+        this.userLoginId = userLoginId;
+        this.userPassword = userPassword;
         this.userName = userName;
-        this.userAge = userAge;
-        this.userSex = userSex;
+        this.userNumber = userNumber;
+        this.patientAge = patientAge;
+        this.patientSex = patientSex;
         this.patientName = patientName;
-        this.patientNumber = patientNumber;
         this.disabledType = disabledType;
         this.disabledGrade = disabledGrade;
         this.significant = significant;
-        this.request = request;
+        this.requirement = requirement;
     }
 
     public static MypageResponseDto of(User user) {
         return MypageResponseDto.builder()
+                .userLoginId(user.getUserLoginId())
+                .userPassword(user.getUserPassword())
                 .userName(user.getUserName())
-                .userAge(user.getUserAge())
-                .userSex(user.getUserSex())
+                .userNumber(user.getUserNumber())
+                .patientAge(user.getPatientAge())
+                .patientSex(user.getPatientSex())
                 .patientName(user.getPatientName())
-                .patientNumber(user.getPatientNumber())
                 .disabledType(user.getDisabledTypes())
                 .disabledGrade(user.getDisabledGrade())
                 .significant(user.getSignificant())
-                .request(user.getRequest())
+                .requirement(user.getRequirement())
                 .build();
     }
 

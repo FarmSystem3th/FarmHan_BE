@@ -21,7 +21,7 @@ public class UserService {
 
     public LoginResponseDto login(LoginRequestDto loginRequestDto){
 
-        User user = userRepository.findByloginId(loginRequestDto.getLoginId())
+        User user = userRepository.findByUserLoginId(loginRequestDto.getLoginId())
                 .orElseThrow(() -> new ApiException(ErrorDefine.USER_NOT_FOUND));
 
         if(user.getUserPassword().equals(loginRequestDto.getUserPassword())){
