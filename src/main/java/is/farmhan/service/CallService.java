@@ -47,49 +47,49 @@ public class CallService {
         return CallStartResponseDto.of(call);
     }
 
-public CallResponseDto call(CallRequestDto callRequestDto) {
+    public CallResponseDto call(CallRequestDto callRequestDto) {
 
-    User user = userRepository.findById(callRequestDto.getUserId())
-            .orElseThrow(() -> new ApiException(ErrorDefine.USER_NOT_FOUND));
+        User user = userRepository.findById(callRequestDto.getUserId())
+                .orElseThrow(() -> new ApiException(ErrorDefine.USER_NOT_FOUND));
 
-    CallHistory callHistory = callHistoryRepository.findById(callRequestDto.getCallId())
-            .orElseThrow(() -> new ApiException(ErrorDefine.USER_NOT_FOUND));
+        Call call = callRepository.findById(callRequestDto.getCallId())
+                .orElseThrow(()-> new ApiException(ErrorDefine.CALL_NOT_FOUND));
 
+        Mono<Map> responseMono = webClient.post()
+                .uri("/api/question")
+                .bodyValue(buildRequestBody(user, callRequestDto))
+                .retrieve()
+                .bodyToMono(Map.class)
+                .onErrorResume(WebClientResponseException.class, ex -> {
 
-    Mono<Map> responseMono = webClient.post()
-            .uri("/api/question")
-            .bodyValue(buildRequestBody(user, callRequestDto))
-            .retrieve()
-            .bodyToMono(Map.class)
-            .onErrorResume(WebClientResponseException.class, ex -> {
+                    throw new ApiException(ErrorDefine.AI_SERVER_ERROR);
+                });
 
+        Map<String, Object> responseBody = responseMono.block();
+
+        if (responseBody != null && (Boolean) responseBody.get("success")) {
+            Map<String, Object> responseDto = (Map<String, Object>) responseBody.get("responseDto");
+            System.err.println(responseDto);
+            if (responseDto != null) {
+                String messageAnswer = (String) responseDto.get("messageAnswer");
+
+                CallHistory callHistory = CallHistory.builder()
+                                            .call(call)
+                                            .messageAnswer(messageAnswer)
+                                            .messageQuestion(callRequestDto.getMessageQuestion())
+                                            .createAt(LocalDateTime.now())
+                                            .build();
+
+                callHistoryRepository.save(callHistory);
+                return CallResponseDto.of(callHistory);
+
+            } else {
                 throw new ApiException(ErrorDefine.AI_SERVER_ERROR);
-            });
-
-    Map<String, Object> responseBody = responseMono.block();
-
-    if (responseBody != null && (Boolean) responseBody.get("success")) {
-        Map<String, Object> responseDto = (Map<String, Object>) responseBody.get("responseDto");
-        if (responseDto != null) {
-            String messageAnswer = (String) responseDto.get("messageQuestion");
-
-            CallHistory.builder()
-                    .call(callHistory.getCall())
-                    .messageAnswer(messageAnswer)
-                    .messageQuestion(callHistory.getMessageQuestion())
-                    .createAt(LocalDateTime.now())
-                    .build();
-
-            callHistoryRepository.save(callHistory);
-            return CallResponseDto.of(callHistory);
-
-        } else {
+            }
+        }else {
             throw new ApiException(ErrorDefine.AI_SERVER_ERROR);
         }
-    }else {
-        throw new ApiException(ErrorDefine.AI_SERVER_ERROR);
     }
-}
 
     private Map<String, String> buildRequestBody(User user, CallRequestDto callRequestDto) {
         Map<String, String> requestBody = new HashMap<>();
