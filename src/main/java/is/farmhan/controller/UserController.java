@@ -30,7 +30,7 @@ public class UserController {
         return new ResponseDto<>(userService.signup(signUpRequestDto));
     }
 
-    @PostMapping("/mypage/{userId}")
+    @GetMapping("/mypage/{userId}")
     public ResponseDto<MypageResponseDto> myPage(@PathVariable Long userId){
         return new ResponseDto<>(userService.myPage(userId));
     }
