@@ -60,7 +60,8 @@ public class UserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ApiException(ErrorDefine.USER_NOT_FOUND));
 
-        return MypageResponseDto.of(user);
+        List<DisabledType> disabledTypes = disabledTypeRepository.findAllByUserId(userId);
+        return MypageResponseDto.of(user, disabledTypes);
     }
 
 }
