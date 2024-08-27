@@ -62,7 +62,7 @@ public class CallService {
                 .bodyToMono(Map.class)
                 .onErrorResume(WebClientResponseException.class, ex -> {
 
-                    throw new ApiException(ErrorDefine.AI_SERVER_ERROR);
+                    throw new ApiException(ErrorDefine.AI_SERVER_REQUEST_ERROR);
                 });
 
         Map<String, Object> responseBody = responseMono.block();
@@ -84,12 +84,14 @@ public class CallService {
                 return CallResponseDto.of(callHistory);
 
             } else {
-                throw new ApiException(ErrorDefine.AI_SERVER_ERROR);
+                throw new ApiException(ErrorDefine.AI_SERVER_ERROR_RESPONSE_DTO_ERROR);
             }
         }else {
-            throw new ApiException(ErrorDefine.AI_SERVER_ERROR);
+            throw new ApiException(ErrorDefine.AI_SERVER_ERROR_RESPONSE_BODY_ERROR);
         }
     }
+
+
 
     private Map<String, String> buildRequestBody(User user, CallRequestDto callRequestDto) {
         Map<String, String> requestBody = new HashMap<>();
