@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.ToString;
 
 import java.util.List;
+import java.util.stream.Collectors;
+
 @Getter
 @ToString
 public class MypageResponseDto {
@@ -17,13 +19,13 @@ public class MypageResponseDto {
     private final String patientAge;
     private final String patientSex;
     private final String patientName;
-    private final List<DisabledType> disabledType;
+    private final List<DisabledTypeDto> disabledTypeList;
     private final String disabledGrade;
     private final String significant;
     private final String requirement;
 
     @Builder
-    public MypageResponseDto(String userLoginId, String userPassword, String userName, String userNumber, String patientAge, String patientSex, String patientName, List<DisabledType> disabledType, String disabledGrade, String significant, String requirement) {
+    public MypageResponseDto(String userLoginId, String userPassword, String userName, String userNumber, String patientAge, String patientSex, String patientName, List<DisabledTypeDto> disabledType, String disabledGrade, String significant, String requirement) {
         this.userLoginId = userLoginId;
         this.userPassword = userPassword;
         this.userName = userName;
@@ -31,13 +33,17 @@ public class MypageResponseDto {
         this.patientAge = patientAge;
         this.patientSex = patientSex;
         this.patientName = patientName;
-        this.disabledType = disabledType;
+        this.disabledTypeList = disabledType;
         this.disabledGrade = disabledGrade;
         this.significant = significant;
         this.requirement = requirement;
     }
 
-    public static MypageResponseDto of(User user) {
+    public static MypageResponseDto of(User user, List<DisabledType> disabledTypes) {
+        List<DisabledTypeDto> disabledTypeDtos = disabledTypes.stream()
+                .map(DisabledTypeDto::fromEntity)
+                .collect(Collectors.toList());
+
         return MypageResponseDto.builder()
                 .userLoginId(user.getUserLoginId())
                 .userPassword(user.getUserPassword())
@@ -46,7 +52,7 @@ public class MypageResponseDto {
                 .patientAge(user.getPatientAge())
                 .patientSex(user.getPatientSex())
                 .patientName(user.getPatientName())
-                .disabledType(user.getDisabledTypes())
+                .disabledType(disabledTypeDtos)
                 .disabledGrade(user.getDisabledGrade())
                 .significant(user.getSignificant())
                 .requirement(user.getRequirement())
