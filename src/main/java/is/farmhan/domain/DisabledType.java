@@ -1,6 +1,7 @@
 package is.farmhan.domain;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.annotations.DynamicUpdate;
@@ -27,4 +28,9 @@ public class DisabledType {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    @Builder
+    public DisabledType(String disabledType, User user) {
+        this.disabledType = disabledType;
+        this.user = user;
+    }
 }

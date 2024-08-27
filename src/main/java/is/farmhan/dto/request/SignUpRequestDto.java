@@ -15,7 +15,7 @@ public class SignUpRequestDto {
     private String patientAge;
     private String patientSex;
     private String patientName;
-    private List<DisabledType> disabledType;
+    private List<DisabledTypeList> disabledTypes;
     private String disabledGrade;
     private String significant;
     private String requirement;
@@ -31,11 +31,12 @@ public class SignUpRequestDto {
                 .patientAge(signUpRequestDto.getPatientAge())
                 .patientSex(signUpRequestDto.getPatientSex())
                 .patientName(signUpRequestDto.getPatientName())
-                .disabledTypes(signUpRequestDto.getDisabledType())
                 .disabledGrade(signUpRequestDto.getDisabledGrade())
                 .significant(signUpRequestDto.getSignificant())
                 .requirement(signUpRequestDto.getRequirement())
                 .build();
     }
+
+
 
 }

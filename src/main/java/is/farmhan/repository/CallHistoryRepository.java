@@ -1,15 +1,13 @@
 package is.farmhan.repository;
 
-import is.farmhan.domain.Call;
-import is.farmhan.domain.User;
+import is.farmhan.domain.CallHistory;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Repository
-public interface CallRepository extends JpaRepository<Call, Long> {
-
-    List<Call> findByUserId(Long userId);
+public interface CallHistoryRepository extends JpaRepository<CallHistory,Long> {
+    List<CallHistory> findByCallId(Long callId);
 
 }
