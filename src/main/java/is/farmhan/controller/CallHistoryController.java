@@ -16,8 +16,8 @@ public class CallHistoryController {
 
     private final CallHistoryService callHistoryService;
 
-    @GetMapping("/mypage/call-list")
-    public ResponseDto<Map<String, Object>> callHistoryList(@RequestBody CallHistoryRequestDto callHistoryRequestDto){
-        return new ResponseDto<>(callHistoryService.callHistoryList(callHistoryRequestDto));
+    @GetMapping("/mypage/call-list/{userId}")
+    public ResponseDto<Map<String, Object>> callHistoryList(@PathVariable Long userId){
+        return new ResponseDto<>(callHistoryService.callHistoryList(userId));
     }
 }

@@ -29,10 +29,10 @@ public class CallHistoryService {
     private final UserRepository userRepository;
     private final CallRepository callRepository;
 
-    public Map<String, Object> callHistoryList(CallHistoryRequestDto callHistoryRequestDto) {
+    public Map<String, Object> callHistoryList(Long userId) {
 
         // User 조회
-        User user = userRepository.findById(callHistoryRequestDto.getUserId())
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ApiException(ErrorDefine.USER_NOT_FOUND));
 
         // Call 리스트 조회
