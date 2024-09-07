@@ -24,10 +24,10 @@ public class User {
     @Column(nullable = false)
     private String userPassword;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String userName;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String userNumber;
 
     @Column(nullable = false)
@@ -67,8 +67,8 @@ public class User {
         this.id = id;
         this.userLoginId = userLoginId;
         this.userPassword = userPassword;
-        this.userName = userName;
-        this.userNumber = userNumber;
+        this.userName = userName != null ? userName : "";
+        this.userNumber = userNumber != null ? userNumber : "";
         this.patientSex = patientSex;
         this.patientAge = patientAge;
         this.patientName = patientName;
