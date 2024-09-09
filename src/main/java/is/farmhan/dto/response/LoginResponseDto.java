@@ -3,19 +3,15 @@ package is.farmhan.dto.response;
 import is.farmhan.domain.User;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 import java.util.List;
 @Getter
-@ToString
+@Builder
+@RequiredArgsConstructor
 public class LoginResponseDto {
     private final Long userId;
-
-
-    @Builder
-    public LoginResponseDto(Long userId) {
-        this.userId = userId;
-    }
 
     public static LoginResponseDto of(User user){
         return LoginResponseDto.builder()

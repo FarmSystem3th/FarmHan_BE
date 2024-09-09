@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 import org.springframework.cglib.core.Block;
 
 @Getter
-@NoArgsConstructor
 @AllArgsConstructor
 public class DisabledTypeList {
 

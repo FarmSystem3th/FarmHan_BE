@@ -3,17 +3,15 @@ package is.farmhan.dto.response;
 import is.farmhan.domain.Call;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 @Getter
-@ToString
+@Builder
+@RequiredArgsConstructor
 public class CallStartResponseDto {
 
     private final Long callId;
-    @Builder
-    public CallStartResponseDto(Long callId) {
-        this.callId = callId;
-    }
 
     public static CallStartResponseDto of(Call call){
         return CallStartResponseDto.builder()

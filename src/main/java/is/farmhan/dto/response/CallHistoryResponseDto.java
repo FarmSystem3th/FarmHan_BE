@@ -1,5 +1,6 @@
 package is.farmhan.dto.response;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
@@ -8,7 +9,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
-@ToString
+@Builder
 @RequiredArgsConstructor
 public class CallHistoryResponseDto {
 
