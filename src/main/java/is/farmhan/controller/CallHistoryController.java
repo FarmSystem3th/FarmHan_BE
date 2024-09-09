@@ -11,7 +11,6 @@ import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
-@Slf4j
 public class CallHistoryController {
 
     private final CallHistoryService callHistoryService;
