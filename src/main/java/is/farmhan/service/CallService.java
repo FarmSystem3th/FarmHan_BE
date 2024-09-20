@@ -11,9 +11,14 @@ import is.farmhan.exeption.ErrorDefine;
 import is.farmhan.repository.CallHistoryRepository;
 import is.farmhan.repository.CallRepository;
 import is.farmhan.repository.UserRepository;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestClient;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
@@ -31,6 +36,7 @@ public class CallService {
     private final CallRepository callRepository;
     private final CallHistoryRepository callHistoryRepository;
     private final WebClient webClient;
+    private final CustomHttpInterface customHttpInterface;
 
     public CallStartResponseDto startCall(Long userId){
 
@@ -88,6 +94,53 @@ public class CallService {
             }
         }else {
             throw new ApiException(ErrorDefine.AI_SERVER_ERROR_RESPONSE_BODY_ERROR);
+        }
+    }
+
+    public CallResponseDto callV2(CallRequestDto callRequestDto) {
+
+        User user = userRepository.findById(callRequestDto.getUserId())
+                .orElseThrow(() -> new ApiException(ErrorDefine.USER_NOT_FOUND));
+
+        Call call = callRepository.findById(callRequestDto.getCallId())
+                .orElseThrow(()-> new ApiException(ErrorDefine.CALL_NOT_FOUND));
+
+
+
+        RestClient restClient = RestClient.builder()
+                .baseUrl("https://proma-ai.store") // base URL
+                .build();
+
+        try {
+            Map<String, Object> responseBody = restClient.post()
+                    .uri("/api/question")
+                    .body(buildRequestBody(user, callRequestDto))
+                    .retrieve()
+                    .body(new ParameterizedTypeReference<Map<String, Object>>() {}); // 타입 정보
+
+            if (responseBody != null && (Boolean) responseBody.get("success")) {
+                Map<String, Object> responseDto = (Map<String, Object>) responseBody.get("responseDto");
+                if (responseDto != null) {
+                    String messageAnswer = (String) responseDto.get("messageAnswer");
+
+                    CallHistory callHistory = CallHistory.builder()
+                            .call(call)
+                            .messageAnswer(messageAnswer)
+                            .messageQuestion(callRequestDto.getMessageQuestion())
+                            .createAt(LocalDateTime.now())
+                            .build();
+
+                    callHistoryRepository.save(callHistory);
+                    return CallResponseDto.of(callHistory);
+
+                } else {
+                    throw new ApiException(ErrorDefine.AI_SERVER_ERROR_RESPONSE_DTO_ERROR);
+                }
+            } else {
+                throw new ApiException(ErrorDefine.AI_SERVER_ERROR_RESPONSE_BODY_ERROR);
+            }
+        } catch (RestClientException e) {
+            throw new ApiException(ErrorDefine.AI_SERVER_REQUEST_ERROR);
         }
     }
 

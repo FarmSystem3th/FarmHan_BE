@@ -24,6 +24,14 @@ public class CallController {
     public ResponseDto<CallResponseDto> call(@RequestBody CallRequestDto callRequestDto){
         return new ResponseDto<>(callService.call(callRequestDto));
     }
+    @PostMapping("/call-v2")
+    public ResponseDto<CallResponseDto> callV2(@RequestBody CallRequestDto callRequestDto){
+        return new ResponseDto<>(callService.callV2(callRequestDto));
+    }
+    @PostMapping("/call-v3")
+    public ResponseDto<CallResponseDto> callV3(@RequestBody CallRequestDto callRequestDto){
+        return new ResponseDto<>(callService.callV3(callRequestDto));
+    }
 
 
 }
