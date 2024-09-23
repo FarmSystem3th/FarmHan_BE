@@ -26,6 +26,10 @@ import reactor.core.publisher.Mono;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @Service
 @Transactional
@@ -53,70 +57,123 @@ public class CallService {
         return CallStartResponseDto.of(call);
     }
 
-    public CallResponseDto call(CallRequestDto callRequestDto) {
-
+//    public CallResponseDto call-v1(CallRequestDto callRequestDto) {
+//
+//        User user = userRepository.findById(callRequestDto.getUserId())
+//                .orElseThrow(() -> new ApiException(ErrorDefine.USER_NOT_FOUND));
+//
+//        Call call = callRepository.findById(callRequestDto.getCallId())
+//                .orElseThrow(()-> new ApiException(ErrorDefine.CALL_NOT_FOUND));
+//
+//        Mono<Map> responseMono = webClient.post()
+//                .uri("/api/question")
+//                .bodyValue(buildRequestBody(user, callRequestDto))
+//                .retrieve()
+//                .bodyToMono(Map.class)
+//                .onErrorResume(WebClientResponseException.class, ex -> {
+//
+//                    throw new ApiException(ErrorDefine.AI_SERVER_REQUEST_ERROR);
+//                });
+//
+//        Map<String, Object> responseBody = responseMono.block();
+//
+//        if (responseBody != null && (Boolean) responseBody.get("success")) {
+//            Map<String, Object> responseDto = (Map<String, Object>) responseBody.get("responseDto");
+//            System.err.println(responseDto);
+//            if (responseDto != null) {
+//                String messageAnswer = (String) responseDto.get("messageAnswer");
+//
+//                CallHistory callHistory = CallHistory.builder()
+//                                            .call(call)
+//                                            .messageAnswer(messageAnswer)
+//                                            .messageQuestion(callRequestDto.getMessageQuestion())
+//                                            .createAt(LocalDateTime.now())
+//                                            .build();
+//
+//                callHistoryRepository.save(callHistory);
+//                return CallResponseDto.of(callHistory);
+//
+//            } else {
+//                throw new ApiException(ErrorDefine.AI_SERVER_ERROR_RESPONSE_DTO_ERROR);
+//            }
+//        }else {
+//            throw new ApiException(ErrorDefine.AI_SERVER_ERROR_RESPONSE_BODY_ERROR);
+//        }
+//    }
+//
+//    public CallResponseDto callV2(CallRequestDto callRequestDto) {
+//
+//        User user = userRepository.findById(callRequestDto.getUserId())
+//                .orElseThrow(() -> new ApiException(ErrorDefine.USER_NOT_FOUND));
+//
+//        Call call = callRepository.findById(callRequestDto.getCallId())
+//                .orElseThrow(()-> new ApiException(ErrorDefine.CALL_NOT_FOUND));
+//
+//
+//
+//        RestClient restClient = RestClient.builder()
+//                .baseUrl("https://proma-ai.store")
+//                .build();
+//
+//        try {
+//            Map<String, Object> responseBody = restClient.post()
+//                    .uri("/api/question")
+//                    .body(buildRequestBody(user, callRequestDto))
+//                    .retrieve()
+//                    .body(new ParameterizedTypeReference<Map<String, Object>>() {});
+//
+//            if (responseBody != null && (Boolean) responseBody.get("success")) {
+//                Map<String, Object> responseDto = (Map<String, Object>) responseBody.get("responseDto");
+//                if (responseDto != null) {
+//                    String messageAnswer = (String) responseDto.get("messageAnswer");
+//
+//                    CallHistory callHistory = CallHistory.builder()
+//                            .call(call)
+//                            .messageAnswer(messageAnswer)
+//                            .messageQuestion(callRequestDto.getMessageQuestion())
+//                            .createAt(LocalDateTime.now())
+//                            .build();
+//
+//                    callHistoryRepository.save(callHistory);
+//                    return CallResponseDto.of(callHistory);
+//
+//                } else {
+//                    throw new ApiException(ErrorDefine.AI_SERVER_ERROR_RESPONSE_DTO_ERROR);
+//                }
+//            } else {
+//                throw new ApiException(ErrorDefine.AI_SERVER_ERROR_RESPONSE_BODY_ERROR);
+//            }
+//        } catch (RestClientException e) {
+//            throw new ApiException(ErrorDefine.AI_SERVER_REQUEST_ERROR);
+//        }
+//    }
+    public CallResponseDto callAsync(CallRequestDto callRequestDto) {
         User user = userRepository.findById(callRequestDto.getUserId())
                 .orElseThrow(() -> new ApiException(ErrorDefine.USER_NOT_FOUND));
 
         Call call = callRepository.findById(callRequestDto.getCallId())
-                .orElseThrow(()-> new ApiException(ErrorDefine.CALL_NOT_FOUND));
+                .orElseThrow(() -> new ApiException(ErrorDefine.CALL_NOT_FOUND));
 
-        Mono<Map> responseMono = webClient.post()
-                .uri("/api/question")
-                .bodyValue(buildRequestBody(user, callRequestDto))
-                .retrieve()
-                .bodyToMono(Map.class)
-                .onErrorResume(WebClientResponseException.class, ex -> {
+        // 비동기
+        CompletableFuture<Map<String, Object>> futureResponse = CompletableFuture.supplyAsync(() -> {
+            RestClient restClient = RestClient.builder()
+                    .baseUrl("https://proma-ai.store")
+                    .build();
 
-                    throw new ApiException(ErrorDefine.AI_SERVER_REQUEST_ERROR);
-                });
-
-        Map<String, Object> responseBody = responseMono.block();
-
-        if (responseBody != null && (Boolean) responseBody.get("success")) {
-            Map<String, Object> responseDto = (Map<String, Object>) responseBody.get("responseDto");
-            System.err.println(responseDto);
-            if (responseDto != null) {
-                String messageAnswer = (String) responseDto.get("messageAnswer");
-
-                CallHistory callHistory = CallHistory.builder()
-                                            .call(call)
-                                            .messageAnswer(messageAnswer)
-                                            .messageQuestion(callRequestDto.getMessageQuestion())
-                                            .createAt(LocalDateTime.now())
-                                            .build();
-
-                callHistoryRepository.save(callHistory);
-                return CallResponseDto.of(callHistory);
-
-            } else {
-                throw new ApiException(ErrorDefine.AI_SERVER_ERROR_RESPONSE_DTO_ERROR);
+            try {
+                return restClient.post()
+                        .uri("/api/question")
+                        .body(buildRequestBody(user, callRequestDto))
+                        .retrieve()
+                        .body(new ParameterizedTypeReference<Map<String, Object>>() {});
+            } catch (RestClientException e) {
+                throw new ApiException(ErrorDefine.AI_SERVER_REQUEST_ERROR);
             }
-        }else {
-            throw new ApiException(ErrorDefine.AI_SERVER_ERROR_RESPONSE_BODY_ERROR);
-        }
-    }
-
-    public CallResponseDto callV2(CallRequestDto callRequestDto) {
-
-        User user = userRepository.findById(callRequestDto.getUserId())
-                .orElseThrow(() -> new ApiException(ErrorDefine.USER_NOT_FOUND));
-
-        Call call = callRepository.findById(callRequestDto.getCallId())
-                .orElseThrow(()-> new ApiException(ErrorDefine.CALL_NOT_FOUND));
-
-
-
-        RestClient restClient = RestClient.builder()
-                .baseUrl("https://proma-ai.store") // base URL
-                .build();
+        });
 
         try {
-            Map<String, Object> responseBody = restClient.post()
-                    .uri("/api/question")
-                    .body(buildRequestBody(user, callRequestDto))
-                    .retrieve()
-                    .body(new ParameterizedTypeReference<Map<String, Object>>() {}); // 타입 정보
+
+            Map<String, Object> responseBody = futureResponse.get();  // get()으로 결과를 기다림
 
             if (responseBody != null && (Boolean) responseBody.get("success")) {
                 Map<String, Object> responseDto = (Map<String, Object>) responseBody.get("responseDto");
@@ -139,7 +196,7 @@ public class CallService {
             } else {
                 throw new ApiException(ErrorDefine.AI_SERVER_ERROR_RESPONSE_BODY_ERROR);
             }
-        } catch (RestClientException e) {
+        } catch (InterruptedException | ExecutionException e) {
             throw new ApiException(ErrorDefine.AI_SERVER_REQUEST_ERROR);
         }
     }

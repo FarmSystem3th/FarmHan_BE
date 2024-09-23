@@ -20,13 +20,18 @@ public class CallController {
         return new ResponseDto<>(callService.startCall(userId));
     }
 
+//    @PostMapping("/call")
+//    public ResponseDto<CallResponseDto> call(@RequestBody CallRequestDto callRequestDto){
+//        return new ResponseDto<>(callService.call(callRequestDto));
+//    }
+//    @PostMapping("/call-v2")
+//    public ResponseDto<CallResponseDto> callV2(@RequestBody CallRequestDto callRequestDto){
+//        return new ResponseDto<>(callService.callV2(callRequestDto));
+//    }
+
     @PostMapping("/call")
-    public ResponseDto<CallResponseDto> call(@RequestBody CallRequestDto callRequestDto){
-        return new ResponseDto<>(callService.call(callRequestDto));
-    }
-    @PostMapping("/call-v2")
-    public ResponseDto<CallResponseDto> callV2(@RequestBody CallRequestDto callRequestDto){
-        return new ResponseDto<>(callService.callV2(callRequestDto));
+    public ResponseDto<CallResponseDto> callAsync(@RequestBody CallRequestDto callRequestDto){
+        return new ResponseDto<>(callService.callAsync(callRequestDto));
     }
 
 
